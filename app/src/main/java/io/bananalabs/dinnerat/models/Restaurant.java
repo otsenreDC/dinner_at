@@ -228,4 +228,26 @@ public class Restaurant extends CPDefaultRecord {
     public void setApproved(Boolean approved) {
         this.approved = approved;
     }
+
+    public static class Contract {
+        public static final String COL_ID = "_id";
+        public static final String COL_RESTAURANT_ID = "restaurant_id";
+        public static final String COL_NAME = "name";
+        public static final String COL_STREET = "street";
+        public static final String COL_BUILDING = "building";
+        public static final String COL_CITY = "city";
+        public static final String COL_STATE = "state";
+        public static final String COL_ZIP = "zip";
+        public static final String COL_GRADE = "grade";
+        public static final String COL_GRADEDATE = "gradadate";
+        public static final String COL_PRICE = "price";
+        public static final String COL_PHONE = "phone";
+        public static final String COL_CUISINE = "cuisine";
+        public static final String COL_VIOLATION = "violation";
+        public static final String COL_LATITUDE = "latitude";
+        public static final String COL_LONGITUDE = "longitude";
+        public static final String COL_TOTAL_RATING = "total_rating";
+        public static final String COL_COUNT = "count";
+        public static final String COL_APPROVED = "approved";
+    }
 }
