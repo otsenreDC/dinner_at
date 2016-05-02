@@ -2,12 +2,27 @@
     package="io.bananalabs.dinnerat">
 
     <application
+        android:name=".application.DinnerAtApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- CPOrm Configurations -->
+        <meta-data
+            android:name="CPORM_CONFIG"
+            android:value="io.bananalabs.dinnerat.DinnerAtCPOrmConfiguration" />
+        <meta-data
+            android:name="AUTHORITY"
+            android:value="io.bananalabs.dinnerat" />
+
     </application>
+
+    <provider
+        android:name="za.co.cporm.provider.CPOrmContentProvider"
+        android:authorities="io.bananalabs.dinnerat"
+        android:exported="false"
+        android:process=":provider" />
 
 </manifest>
