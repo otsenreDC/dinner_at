@@ -14,7 +14,7 @@ import za.co.cporm.model.query.Select;
  * Created by EDC on 5/1/16.
  */
 @Table
-public class Restaurant extends CPDefaultRecord<Restaurant> {
+public class Restaurant extends CPDefaultRecord {
     @Column
     private Long restaurantId;
     @Column
@@ -85,9 +85,6 @@ public class Restaurant extends CPDefaultRecord<Restaurant> {
     public static List<Restaurant> fetchAllRestaurants() {
         return Select.from(Restaurant.class).queryAsList();
     }
-
-
-
 
     /*
     Accessors

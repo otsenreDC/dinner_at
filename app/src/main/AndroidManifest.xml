@@ -12,17 +12,17 @@
         <!-- CPOrm Configurations -->
         <meta-data
             android:name="CPORM_CONFIG"
-            android:value="io.bananalabs.dinnerat.DinnerAtCPOrmConfiguration" />
+            android:value="io.bananalabs.dinnerat.orm.DinnerAtCPOrmConfiguration" />
         <meta-data
             android:name="AUTHORITY"
-            android:value="io.bananalabs.dinnerat" />
+            android:value="io.bananalabs.dinnerat.booking" />
+
+        <provider
+            android:name="za.co.cporm.provider.CPOrmContentProvider"
+            android:authorities="io.bananalabs.dinnerat.booking"
+            android:exported="false"
+            android:process=":provider" />
 
     </application>
-
-    <provider
-        android:name="za.co.cporm.provider.CPOrmContentProvider"
-        android:authorities="io.bananalabs.dinnerat"
-        android:exported="false"
-        android:process=":provider" />
 
 </manifest>

@@ -1,4 +1,4 @@
-package io.bananalabs.dinnerat;
+package io.bananalabs.dinnerat.Utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,4 +24,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
 }

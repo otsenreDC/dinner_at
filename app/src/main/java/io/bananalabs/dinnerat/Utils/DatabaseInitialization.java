@@ -1,56 +1,24 @@
-package io.bananalabs.dinnerat;
+package io.bananalabs.dinnerat.Utils;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.test.AndroidTestCase;
-
-import java.util.List;
-
-import io.bananalabs.dinnerat.models.Restaurant;
-import za.co.cporm.model.CPOrm;
-import za.co.cporm.model.query.Select;
 
 /**
  * Created by EDC on 5/1/16.
  */
-public class DatabaseTest extends AndroidTestCase {
+public class DatabaseInitialization {
 
-    public void testA_Insert() {
-        createRestaurantOne().save();
-        createRestaurantTwo().save();
-        Utilities.delay();
-        List<Restaurant> restaurants = Select.from(Restaurant.class).queryAsList();
-        assertNotNull(restaurants);
-        assertTrue(restaurants.size() == 2);
+    private SQLiteDatabase mDatabase;
+
+    public DatabaseInitialization(Context context) {
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        this.mDatabase = dbHelper.getWritableDatabase();
     }
 
-    public void testB_Fetch() {
-        Restaurant restaurant = Restaurant.fetchByName(NAME_1);
-        assertNotNull(restaurant);
-    }
-
-    public void testC_Update() {
-        Restaurant restaurant = Restaurant.fetchByName(NAME_1);
-        assertNotNull(restaurant);
-        restaurant.setGrade("B");
-        restaurant.save();
-        Utilities.delay();
-        Restaurant restaurantUpdated = Restaurant.fetchByName(NAME_1);
-        assertNotNull(restaurantUpdated);
-        assertEquals(restaurantUpdated.getGrade(), "B");
-    }
-
-    public void testD_BulkInsert() {
-        CPOrm.deleteAll(Restaurant.class);
-        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-
-        /**
-         * Create a write able database which will trigger its
-         * creation if it doesn't already exist.
-         */
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        assertNotNull(db);
+    public boolean insertRestaurants() {
+        boolean success = false;
         try {
-            db.execSQL("INSERT INTO `restaurants` (`restaurantid`, `name`, `street`, `building`, `city`, `state`, `zip`, `grade`, `gradedate`, `price`, `phone`, `cuisine`, `violation`, `latitude`, `longitude`, `total_rating`, `count`, `Approved`) VALUES\n" +
+            mDatabase.execSQL("INSERT INTO `restaurant` (`restaurant_id`, `name`, `street`, `building`, `city`, `state`, `zip`, `grade`, `gradedate`, `price`, `phone`, `cuisine`, `violation`, `latitude`, `longitude`, `total_rating`, `count`, `Approved`) VALUES\n" +
                     "(970023, '#1 GARDEN CHINESE', 'PROSPECT PARK WEST', '221', 'BROOKLYN', 'NY', 11215, 'A', 42100, '0', '7188321795', 'Chinese', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.6601, -73.9803, 0, 0, '1'),\n" +
                     "(970024, '#1 SABOR LATINO RESTAURANT', 'WHITE PLAINS ROAD', '4120', 'BRONX', 'NY', 10466, 'A', 41303, '', '7186532222', 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)', 'Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facility\\Zs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical', 40.7523, -73.9876, 0, 0, '1'),\n" +
                     "(970025, '$1.25 PIZZA', 'EAST BURNSIDE AVENUE', '2', 'BRONX', 'NY', 10453, 'A', 41989, '0', '7186180025', 'Pizza', 'Violation Comments: Wiping cloths soiled or not stored in sanitizing solution. Critical Action: Critical', 40.704, -73.9281, 0, -1, '1'),\n" +
@@ -192,98 +160,76 @@ public class DatabaseTest extends AndroidTestCase {
                     "(970161, '27 SHINJUKU SUSHI INC', 'PARK PLACE', '27', 'MANHATTAN', 'NY', 10007, 'A', 42027, '0', '2124067333', 'Japanese', 'Violation Comments: Hot food item not held at or above 140Âº F. Critical Action: Critical', 40.7118, -73.9193, 0, 0, '1'),\n" +
                     "(970162, '27 SPORTS BAR & CAFE', 'WEST MOUNT EDEN AVENUE', '2', 'BRONX', 'NY', 10452, 'A', 41839, '0', '7187313585', 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)', 'Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facility\\Zs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical', 40.769, -73.7368, 0, 0, '1'),\n" +
                     "(970163, '28 MR. MINGS CAFFE', 'CANAL STREET', '28', 'MANHATTAN', 'NY', 10002, 'A', 42081, '0', '2129781888', 'Chinese', 'Violation Comments: Accurate thermometer not provided in refrigerated or hot holding equipment. Critical Action: Not Critical', 40.7143, -73.9905, 0, 0, '1');");
+            mDatabase.execSQL("INSERT INTO `restaurant` (`restaurant_id`, `name`, `street`, `building`, `city`, `state`, `zip`, `grade`, `gradedate`, `price`, `phone`, `cuisine`, `violation`, `latitude`, `longitude`, `total_rating`, `count`, `Approved`) VALUES\n" +
+                    "(970164, '28 NOODLES', '3 AVENUE                                          ', '417', 'MANHATTAN', 'NY', 10016, 'A', 42016, '0', '2126792888', 'Chinese', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.7426, -73.98, 0, 0, '1'),\n" +
+                    "(970165, '29th Street Hotel Acquisition LLC', 'EAST   29 STREET', '29', 'MANHATTAN', 'NY', 10016, '', 0, '', '3477991199', 'Other', 'Violation Comments:  Critical Action: Not Applicable', 40.7565, -73.9299, 0, 0, '1'),\n" +
+                    "(970166, '2A', 'AVENUE A', '25', 'MANHATTAN', 'NY', 10009, 'A', 42024, '0', '2125052466', 'American ', 'Violation Comments: Non-food contact surface improperly constructed. Unacceptable material used. Non-food contact surface or equipment improperly maintained and/or not properly sealed, raised, spaced or movable to allow accessibility for cleaning on all sides, above and underneath the unit. Critical Action: Not Critical', 40.606, -74.0091, 0, 0, '1'),\n" +
+                    "(970167, '2ND AVE BLUE 9 BURGER', '2 AVENUE', '1415', 'MANHATTAN', 'NY', 10021, 'A', 42037, '0', '2129888171', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7701, -73.9578, 0, 0, '1'),\n" +
+                    "(970168, '2ND AVENUE DELI', '1 AVENUE', '1442', 'MANHATTAN', 'NY', 10021, 'A', 41869, '1', '2127371700', 'Jewish/Kosher', 'Violation Comments: Live roaches present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7695, -73.9544, 0, 0, '1'),\n" +
+                    "(970169, '2ND AVENUE DELI', 'EAST 33 STREET', '162', 'MANHATTAN', 'NY', 10016, 'A', 41851, '1', '2126899000', 'Jewish/Kosher', 'Violation Comments: Food not protected from potential source of contamination during storage, preparation, transportation, display or service. Critical Action: Critical', 40.7091, -73.818, 0, 0, '1'),\n" +
+                    "(970170, '3 DELI & GRILL', 'EAST   55 STREET', '133', 'MANHATTAN', 'NY', 10022, 'A', 41732, '0', '2124863272', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7337, -73.9933, 0, 0, '1'),\n" +
+                    "(970171, '3 DS LEGACY SALAD & GRILL', 'MORRIS PARK AVENUE', '445', 'BRONX', 'NY', 10460, 'A', 41990, '0', '3476570910', 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.6987, -73.9859, 0, 0, '1'),\n" +
+                    "(970172, '3 ESQUINAS RESTAURANT', 'FLUSHING AVE', '657', 'BROOKLYN', 'NY', 11206, 'A', 42013, '', '7183844447', 'Spanish', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.7003, -73.947, 0, 0, '1'),\n" +
+                    "(970173, '3 GUYS RESTURANT', 'MADISON AVENUE', '1232', 'MANHATTAN', 'NY', 10128, 'A', 41961, '0', '2123693700', 'American ', 'Violation Comments: Food not protected from potential source of contamination during storage, preparation, transportation, display or service. Critical Action: Critical', 40.7739, -73.958, 0, 0, '1'),\n" +
+                    "(970174, '3 GUYS', 'MADISON AVENUE                                    ', '1381', 'MANHATTAN', 'NY', 10029, 'A', 41872, '0', '2123483800', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7873, -73.9539, 0, 0, '1'),\n" +
+                    "(970175, '3 IN 1 FS&H JAMAICAN RESTAURANT', '243RD ST', '14412', 'QUEENS', 'NY', 11422, 'A', 41949, '', '3476320767', 'Caribbean', 'Violation Comments: Accurate thermometer not provided in refrigerated or hot holding equipment. Critical Action: Not Critical', 40.6601, -73.7397, 0, 0, '1'),\n" +
+                    "(970176, '3 IN 1 KITCHEN', 'FORT HAMILTON PARKWAY', '4902', 'BROOKLYN', 'NY', 11219, 'A', 42006, '0', '7184377744', 'American ', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.6651, -73.7307, 0, 0, '1'),\n" +
+                    "(970177, '3 ROOTS', 'FRANKLIN STREET                                                                                     ', '159', 'BROOKLYN', 'NY', 11222, 'A', 42067, '0', '7183892468', 'Juice, Smoothies, Fruit Salads', 'Violation Comments: Non-food contact surface improperly constructed. Unacceptable material used. Non-food contact surface or equipment improperly maintained and/or not properly sealed, raised, spaced or movable to allow accessibility for cleaning on all sides, above and underneath the unit. Critical Action: Not Critical', 40.7319, -73.9581, 0, 0, '1'),\n" +
+                    "(970178, '3 SHEETS SALOON', 'WEST    3 STREET', '134', 'MANHATTAN', 'NY', 10012, 'A', 42102, '0', '2127771733', 'American ', 'Violation Comments: Hot food item not held at or above 140Âº F. Critical Action: Critical', 40.5146, -74.236, 0, 0, '1'),\n" +
+                    "(970179, '3 SISTERS & SHANTAS RESTAURANT & BAKERY', 'LIBERTY AVENUE', '10704', 'QUEENS', 'NY', 11417, 'A', 41974, '0', '7188453570', 'Caribbean', 'Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facility\\Zs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical', 40.6832, -73.8343, 0, 0, '1'),\n" +
+                    "(970180, '3 STAR COFFEE SHOP', 'COLUMBUS AVENUE', '541', 'MANHATTAN', 'NY', 10024, 'A', 41544, '0', '2128746780', 'American ', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7506, -73.8762, 0, 0, '1'),\n" +
+                    "(970181, '3 STAR JUICE CENTER', 'UTICA AVENUE', '482', 'BROOKLYN', 'NY', 11203, 'A', 42088, '0', '7184930099', 'Juice, Smoothies, Fruit Salads', 'Violation Comments: Sanitized equipment or utensil, including in-use food dispensing utensil, improperly used or stored. Critical Action: Critical', 40.6619, -73.9317, 0, 0, '1'),\n" +
+                    "(970182, '3 WAY RESTAURANT', 'EAST  188 STREET                                  ', '384', 'BRONX', 'NY', 10458, 'A', 41900, '0', '7182959595', 'Latin (Cuban, Dominican, Puerto Rican, South & Central American)', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.8599, -73.8935, 0, 0, '1'),\n" +
+                    "(970183, '301 CAFE Juice and Smoothies', 'E KINGSBRIDGE RD', '301', 'BRONX', 'NY', 10458, 'A', 41808, '', '9174971631', 'Juice, Smoothies, Fruit Salads', 'Violation Comments: Sanitized equipment or utensil, including in-use food dispensing utensil, improperly used or stored. Critical Action: Critical', 40.8628, -73.8938, 0, 0, '1'),\n" +
+                    "(970184, '310 - EXELSIOR', 'ROOSEVELT AVENUE', '126', 'QUEENS', 'NY', 11368, 'A', 41422, '', '7185958100', 'American ', 'Violation Comments:  Critical Action: Not Applicable', 40.753, -73.851, 0, 0, '1'),\n" +
+                    "(970185, '318 - TWO BOOTS', 'ROOSEVELT AVENUE', '126', 'QUEENS', 'NY', 11368, 'A', 41786, '', '7185958100', 'American ', 'Violation Comments:  Critical Action: Not Applicable', 40.753, -73.851, 0, 0, '1'),\n" +
+                    "(970186, '31ST AVENUE GYRO.', '31 AVENUE                                         ', '4402', 'QUEENS', 'NY', 11103, 'A', 42096, '0', '7185454340', 'Greek', 'Violation Comments: Food from unapproved or unknown source or home canned. Reduced oxygen packaged (ROP) fish not frozen before processing; or ROP foods prepared on premises transported to another site. Critical Action: Critical', 40.7596, -73.9139, 0, 0, '1'),\n" +
+                    "(970187, '32 DEGREE FROYO LOUNGE', '31 STREET                                         ', '22-42     ', 'QUEENS', 'NY', 11105, 'A', 41746, '0', '7187266400', 'Ice Cream, Gelato, Yogurt, Ices', 'Violation Comments: Food Protection Certificate not held by supervisor of food operations. Critical Action: Critical', 40.7753, -73.9118, 0, 0, '1'),\n" +
+                    "(970188, '33 CAPTAINS CAFE', 'E 33RD ST', '18', 'MANHATTAN', 'NY', 10016, 'A', 42073, '', '2127797191', 'Cafe/Coffee/Tea', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7472, -73.9842, 0, 0, '1'),\n" +
+                    "(970189, '33 Gourmet', 'WEST   33 STREET                                  ', '157', 'MANHATTAN', 'NY', 10001, 'A', 42095, '0', '2129041351', 'Delicatessen', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.7503, -73.9905, 0, 0, '1'),\n" +
+                    "(970190, '337 - BURGERS & DOGS', 'ROOSEVELT AVENUE', '126', 'QUEENS', 'NY', 11368, 'A', 41773, '', '7185958100', 'American ', 'Violation Comments: Hot food item not held at or above 140Âº F. Critical Action: Critical', 40.753, -73.851, 0, 0, '1'),\n" +
+                    "(970191, '35 DUET', 'WEST   35 STREET                                                                                    ', '5355', 'MANHATTAN', 'NY', 10001, 'A', 41962, '0', '6464730826', 'Japanese', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7529, -73.993, 0, 0, '1'),\n" +
+                    "(970192, '360 LOUNGE', '37 AVENUE', '13344', 'QUEENS', 'NY', 11354, 'A', 42019, '0', '7188868668', 'Asian', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7605, -73.8333, 0, 0, '1'),\n" +
+                    "(970193, '36-02 Ditmars Coffee Corp.', 'DITMARS BLVD', '3602', 'QUEENS', 'NY', 11105, 'A', 41956, '', '7187754094', 'Cafe/Coffee/Tea', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7741, -73.9083, 0, 0, '1'),\n" +
+                    "(970194, '36TH AVE COFFEE SHOP', '36 AVENUE', '34-02', 'QUEENS', 'NY', 11106, 'A', 42076, '0', '7184334535', 'American ', 'Violation Comments: Evidence of rats or live rats present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7552, -73.9274, 0, 0, '1'),\n" +
+                    "(970195, '38 DELI', '58 STREET', '968', 'BROOKLYN', 'NY', 11219, 'A', 41871, '0', '7187903143', 'Chinese', 'Violation Comments: Live roaches present in facilitys food and/or non-food areas. Critical Action: Critical', 40.6343, -74.0045, 0, 0, '1'),\n" +
+                    "(970196, '388 CAFE & DELI', 'ELDRIDGE STREET                                                                                     ', '1', 'MANHATTAN', 'NY', 10002, 'A', 41957, '0', '2122191318', 'Chinese', 'Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facility\\Zs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical', 40.7145, -73.994, 0, 0, '1'),\n" +
+                    "(970197, '38TH STREET DINER', 'WEST   38 STREET', '32', 'MANHATTAN', 'NY', 10018, 'A', 41879, '0', '2122216222', 'American ', 'Violation Comments: Live roaches present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7161, -73.9648, 0, 0, '1'),\n" +
+                    "(970198, '39 COFFEE SHOP', 'WEST   31 STREET                                  ', '39', 'MANHATTAN', 'NY', 10001, 'A', 42010, '0', '9176172580', 'American ', 'Violation Comments: Non-food contact surface improperly constructed. Unacceptable material used. Non-food contact surface or equipment improperly maintained and/or not properly sealed, raised, spaced or movable to allow accessibility for cleaning on all sides, above and underneath the unit. Critical Action: Not Critical', 40.7475, -73.9876, 0, 0, '1'),\n" +
+                    "(970199, '39 KARAOKE', '39TH ST', '820', 'BROOKLYN', 'NY', 11232, 'Not Y', 0, '0', '3478566929', 'Chinese', 'Violation Comments: Food worker does not use proper utensil to eliminate bare hand contact with food that will not receive adequate additional heat treatment. Critical Action: Critical', 40.6467, -73.9968, 0, 0, '1'),\n" +
+                    "(970200, '395 GOURMET AND GROCERY', 'EAST  149 STREET                                  ', '395', 'BRONX', 'NY', 10455, 'A', 42030, '', '6462403333', 'Delicatessen', 'Violation Comments: Food not cooled by an approved method whereby the internal product temperature is reduced from 140Âº F to 70Âº F or less within 2 hours, and from 70Âº F to 41Âº F or less within 4 additional hours. Critical Action: Critical', 40.7448, -73.909, 0, 0, '1'),\n" +
+                    "(970201, '3E TASTE OF THAI', 'BROADWAY                                          ', '34-16     ', 'QUEENS', 'NY', 11106, 'B', 41845, '0', '7189328826', 'Thai', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7604, -73.9226, 0, 0, '1'),\n" +
+                    "(970202, '3rd & 7', 'QUENTIN ROAD', '3622', 'BROOKLYN', 'NY', 11234, 'A', 41913, '0', '7183366300', 'American ', 'Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facility\\Zs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical', 40.7227, -74.0048, 0, 0, '1'),\n" +
+                    "(970203, '40/40 CLUB BAR', 'ATLANTIC AVENUE', '620', 'BROOKLYN', 'NY', 11217, 'A', 42034, '0', '9176186310', 'American ', 'Violation Comments: Hot food item not held at or above 140Âº F. Critical Action: Critical', 40.683, -73.9753, 0, 0, '1'),\n" +
+                    "(970204, '40/40 CLUB', 'WEST   25 STREET', '6', 'MANHATTAN', 'NY', 10010, 'A', 41996, '0', '2128324040', 'American ', 'Violation Comments: Food not protected from potential source of contamination during storage, preparation, transportation, display or service. Critical Action: Critical', 40.7431, -73.9897, 0, 0, '1'),\n" +
+                    "(970205, '401 LUCKY STAR RESTAURANT', 'MOTHER GASTON BLVD', '401', 'BROOKLYN', 'NY', 11212, 'A', 41933, '', '7184852633', 'Chinese', 'Violation Comments: Live roaches present in facilitys food and/or non-food areas. Critical Action: Critical', 40.6693, -73.9064, 0, 0, '1'),\n" +
+                    "(970206, '414 Hotel', 'W 46TH ST', '414', 'MANHATTAN', 'NY', 10036, 'A', 41914, '', '2123990006', 'Other', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.7612, -73.9918, 0, 0, '1'),\n" +
+                    "(970207, '414 LATINO RESTAURANT SPORTS BAR', 'EAST  138 STREET', '414', 'BRONX', 'NY', 10454, 'A', 41978, '0', '3478515891', 'Mexican', 'Violation Comments: Wiping cloths soiled or not stored in sanitizing solution. Critical Action: Critical', 40.8443, -73.9143, 0, 0, '1'),\n" +
+                    "(970208, '42ND STREET PIZZA DINER', 'WEST   42 STREET', '647', 'MANHATTAN', 'NY', 10036, 'A', 41967, '', '2125944312', 'American ', 'Violation Comments: Food not protected from potential source of contamination during storage, preparation, transportation, display or service. Critical Action: Critical', 40.7619, -74.0001, 0, 0, '1'),\n" +
+                    "(970209, '44 & X HELLS KITCHEN', '10 AVENUE', '622', 'MANHATTAN', 'NY', 10036, 'A', 41995, '0', '2129771170', 'American ', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.761, -73.9942, 0, 0, '1'),\n" +
+                    "(970210, '44 1/2 CAFE', '10 AVENUE', '626', 'MANHATTAN', 'NY', 10036, 'A', 42096, '0', '2123994450', 'American ', 'Violation Comments: Food Protection Certificate not held by supervisor of food operations. Critical Action: Critical', 40.754, -73.9905, 0, 0, '1'),\n" +
+                    "(970211, '44 SW RISTORANTE & BAR', '9 AVENUE                                          ', '621', 'MANHATTAN', 'NY', 10036, 'A', 41759, '0', '2123154582', 'Italian', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7598, -73.9921, 0, 0, '1'),\n" +
+                    "(970212, '444 MADISON COFFEE SHOP', 'MADISON AVENUE                                    ', '444', 'MANHATTAN', 'NY', 10022, 'A', 41781, '0', '2123551439', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7577, -73.9761, 0, 0, '1'),\n" +
+                    "(970213, '44TH STREET MINAR', 'EAST   44 STREET                                  ', '160', 'MANHATTAN', 'NY', 10017, 'A', 41955, '0', '2129490245', 'Indian', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7521, -73.9739, 0, 0, '1'),\n" +
+                    "(970214, '44TH STREET PIZZA', '3 AVENUE                                          ', '700', 'MANHATTAN', 'NY', 10017, 'A', 42039, '0', '2125994438', 'Pizza', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.752, -73.9739, 0, 0, '1'),\n" +
+                    "(970215, '456 RESTAURANT', 'MOTT STREET', '69', 'MANHATTAN', 'NY', 10013, 'A', 41983, '0', '2129640003', 'Chinese', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.5626, -74.191, 0, 0, '1'),\n" +
+                    "(970216, '4618 BAKERY', '8 AVENUE', '4618', 'BROOKLYN', 'NY', 11220, 'A', 41855, '0', '7184384820', 'Bakery', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.8679, -73.8343, 0, 0, '1'),\n" +
+                    "(970217, '46th st Station House', 'WEST   46 STREET', '315', 'MANHATTAN', 'NY', 10036, 'A', 41928, '', '2122470071', 'American ', 'Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical', 40.7603, -73.9886, 0, 0, '1'),\n" +
+                    "(970218, '49 GROVE', 'GROVE STREET', '49', 'MANHATTAN', 'NY', 10014, 'A', 41810, '0', '2127271100', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.6915, -73.8205, 0, 0, '1'),\n" +
+                    "(970219, '4D', 'SOUTHERN BOULEVARD', '2300', 'BRONX', 'NY', 10460, 'A', 41769, '', '7187418295', 'Ice Cream, Gelato, Yogurt, Ices', 'Violation Comments:  Critical Action: Not Applicable', 40.6503, -73.8908, 0, 0, '1'),\n" +
+                    "(970220, '4TH FLOOR CAFE', 'EAST   71 STREET', '221', 'MANHATTAN', 'NY', 10021, 'A', 41914, '0', '2125170586', 'American ', 'Violation Comments: Food contact surface not properly washed, rinsed and sanitized after each use and following any activity when contamination may have occurred. Critical Action: Critical', 40.7528, -73.7075, 0, 0, '1'),\n" +
+                    "(970221, '5 AVENUE ASIAN TASTE', '5 AVENUE', '718', 'BROOKLYN', 'NY', 11215, 'A', 42004, '0', '7187885878', 'Asian', 'Violation Comments: Non-food contact surface improperly constructed. Unacceptable material used. Non-food contact surface or equipment improperly maintained and/or not properly sealed, raised, spaced or movable to allow accessibility for cleaning on all sides, above and underneath the unit. Critical Action: Not Critical', 40.7006, -73.8974, 0, 0, '1'),\n" +
+                    "(970222, '5 BORO BURGER', 'WEST   36 STREET', '80', 'MANHATTAN', 'NY', 10018, 'B', 41635, '0', '2125642211', 'American ', 'Violation Comments: Evidence of mice or live mice present in facilitys food and/or non-food areas. Critical Action: Critical', 40.7509, -73.9866, 0, 0, '1');");
+            success = true;
         } catch (Exception e) {
             e.printStackTrace();
-            assertTrue(false);
         }
 
-        Utilities.delay();
-        List<Restaurant> restaurants = Restaurant.fetchAllRestaurants();
-        assertNotNull(restaurants);
-        assertTrue(restaurants.size() > 20);
-        assertTrue(false);
+        return success;
     }
 
-    private Restaurant createRestaurantOne() {
-        Restaurant restaurant = new Restaurant(ID_1);
-        restaurant.setName(NAME_1);
-        restaurant.setStreet(STREET_1);
-        restaurant.setBuilding(BUILDING_1);
-        restaurant.setCity(CITY_1);
-        restaurant.setState(STATE_1);
-        restaurant.setZip(ZIP_1);
-        restaurant.setGrade(GRADE_1);
-        restaurant.setGradedate(GRADEDATE_1);
-        restaurant.setPrice(PRICE_1);
-        restaurant.setPhone(PHONE_1);
-        restaurant.setCuisine(CUISINE_1);
-        restaurant.setViolation(VIOLATION_1);
-        restaurant.setLatitude(LATITUDE_1);
-        restaurant.setLongitude(LONGITUDE_1);
-        restaurant.setTotalRating(TOTAL_RATING_1);
-        restaurant.setCount(COUNT_1);
-        restaurant.setApproved(APPROVED_1);
-        return restaurant;
+    public boolean closeDataBase() {
+        mDatabase.close();
+        return !mDatabase.isOpen();
     }
-
-    private Restaurant createRestaurantTwo() {
-        Restaurant restaurant = new Restaurant(ID_2);
-        restaurant.setName(NAME_2);
-        restaurant.setStreet(STREET_2);
-        restaurant.setBuilding(BUILDING_2);
-        restaurant.setCity(CITY_2);
-        restaurant.setState(STATE_2);
-        restaurant.setZip(ZIP_2);
-        restaurant.setGrade(GRADE_2);
-        restaurant.setGradedate(GRADEDATE_2);
-        restaurant.setPrice(PRICE_2);
-        restaurant.setPhone(PHONE_2);
-        restaurant.setCuisine(CUISINE_2);
-        restaurant.setViolation(VIOLATION_2);
-        restaurant.setLatitude(LATITUDE_2);
-        restaurant.setLongitude(LONGITUDE_2);
-        restaurant.setTotalRating(TOTAL_RATING_2);
-        restaurant.setCount(COUNT_2);
-        restaurant.setApproved(APPROVED_2);
-        return restaurant;
-    }
-
-    public static final Long ID_1 = (long) 970023;
-    public static final String NAME_1 = "#1 GARDEN CHINESE";
-    public static final String STREET_1 = "PROSPECT PARK WEST";
-    public static final String BUILDING_1 = "221";
-    public static final String CITY_1 = "BROOKLYN";
-    public static final String STATE_1 = "NY";
-    public static final Integer ZIP_1 = 11215;
-    public static final String GRADE_1 = "A";
-    public static final Integer GRADEDATE_1 = 42100;
-    public static final String PRICE_1 = "0";
-    public static final String PHONE_1 = "7188321795";
-    public static final String CUISINE_1 = "Chinese";
-    public static final String VIOLATION_1 = "Violation Comments: Cold food item held above 41Âº F (smoked fish and reduced oxygen packaged foods above 38 ÂºF) except during necessary preparation. Critical Action: Critical";
-    public static final Float LATITUDE_1 = (float) 40.6601;
-    public static final Float LONGITUDE_1 = (float) -73.9803;
-    public static final Float TOTAL_RATING_1 = (float) 0;
-    public static final Integer COUNT_1 = 0;
-    public static final Boolean APPROVED_1 = true;
-
-    public static final Long ID_2 = (long) 970024;
-    public static final String NAME_2 = "#1 SABOR LATINO RESTAURANT";
-    public static final String STREET_2 = "WHITE PLAINS ROAD";
-    public static final String BUILDING_2 = "'4120'";
-    public static final String CITY_2 = "'BRONX'";
-    public static final String STATE_2 = "NY";
-    public static final Integer ZIP_2 = 10466;
-    public static final String GRADE_2 = "A";
-    public static final Integer GRADEDATE_2 = 41303;
-    public static final String PRICE_2 = "";
-    public static final String PHONE_2 = "7186532222";
-    public static final String CUISINE_2 = "Latin (Cuban, Dominican, Puerto Rican, South & Central American)";
-    public static final String VIOLATION_2 = "Violation Comments: Filth flies or food/refuse/sewage-associated (FRSA) flies present in facilityZs food and/or non-food areas. Filth flies include house flies, little house flies, blow flies, bottle flies and flesh flies. Food/refuse/sewage-associated flies include fruit flies, drain flies and Phorid flies. Critical Action: Critical";
-    public static final Float LATITUDE_2 = (float) 40.7523;
-    public static final Float LONGITUDE_2 = (float) -73.9876;
-    public static final Float TOTAL_RATING_2 = (float) 0;
-    public static final Integer COUNT_2 = 0;
-    public static final Boolean APPROVED_2 = true;
-
 }
