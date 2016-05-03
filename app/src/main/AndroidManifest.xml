@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.bananalabs.dinnerat">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission-sdk-23 android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.DinnerAtApplication"
         android:allowBackup="true"
