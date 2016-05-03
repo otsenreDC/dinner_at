@@ -1,4 +1,4 @@
-package io.bananalabs.dinnerat.Utils;
+package io.bananalabs.dinnerat.utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

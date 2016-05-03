@@ -86,6 +86,11 @@ public class Restaurant extends CPDefaultRecord {
         return Select.from(Restaurant.class).queryAsList();
     }
 
+    @Nullable
+    public static Restaurant findById(Long id) {
+        return Restaurant.findById(Restaurant.class, id);
+    }
+
     /*
     Accessors
      */

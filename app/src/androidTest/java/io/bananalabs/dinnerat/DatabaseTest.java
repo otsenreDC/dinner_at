@@ -4,9 +4,7 @@ import android.test.AndroidTestCase;
 
 import java.util.List;
 
-import io.bananalabs.dinnerat.Utils.DatabaseInitialization;
 import io.bananalabs.dinnerat.models.Restaurant;
-import za.co.cporm.model.CPOrm;
 import za.co.cporm.model.query.Select;
 
 /**
@@ -21,7 +19,7 @@ public class DatabaseTest extends AndroidTestCase {
         Utilities.delay();
         List<Restaurant> restaurants = Select.from(Restaurant.class).queryAsList();
         assertNotNull(restaurants);
-        assertTrue(restaurants.size() > 2);
+        assertTrue(restaurants.size() >= 2);
     }
 
     public void testB_Fetch() {
@@ -40,20 +38,18 @@ public class DatabaseTest extends AndroidTestCase {
         assertEquals(restaurantUpdated.getGrade(), "B");
     }
 
-    public void testAA_BulkInsert() {
-        CPOrm.deleteAll(Restaurant.class);
-        DatabaseInitialization databaseInitialization = new DatabaseInitialization(getContext());
-        assertTrue(databaseInitialization.insertRestaurants());
-        assertTrue(databaseInitialization.closeDataBase());
-
-        List<Restaurant> restaurants = Restaurant.fetchAllRestaurants();
-        assertNotNull(restaurants);
-        assertTrue(restaurants.size() == 200);
-
-        Restaurant restaurant = Restaurant.fetchByName("28 MR. MINGS CAFFE");
-        assertNotNull(restaurant);
-        assertEquals("NY", restaurant.getState());
-    }
+//    public void testAA_BulkInsert() {
+//        CPOrm.deleteAll(Restaurant.class);
+//        assertTrue(DatabaseInitialization.initialize(getContext()));
+//
+//        List<Restaurant> restaurants = Restaurant.fetchAllRestaurants();
+//        assertNotNull(restaurants);
+//        assertTrue(restaurants.size() == 200);
+//
+//        Restaurant restaurant = Restaurant.fetchByName("28 MR. MINGS CAFFE");
+//        assertNotNull(restaurant);
+//        assertEquals("NY", restaurant.getState());
+//    }
 
     private Restaurant createRestaurantOne() {
         Restaurant restaurant = new Restaurant(ID_1);

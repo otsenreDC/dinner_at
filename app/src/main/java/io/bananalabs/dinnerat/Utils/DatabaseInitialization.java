@@ -1,21 +1,71 @@
-package io.bananalabs.dinnerat.Utils;
+package io.bananalabs.dinnerat.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
+
+import io.bananalabs.dinnerat.models.Restaurant;
 
 /**
  * Created by EDC on 5/1/16.
  */
 public class DatabaseInitialization {
 
+    private static DatabaseInitialization mInstance;
     private SQLiteDatabase mDatabase;
+    private Context context;
 
-    public DatabaseInitialization(Context context) {
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        this.mDatabase = dbHelper.getWritableDatabase();
+    private DatabaseInitialization(Context context) {
+        this.context = context;
+        forceDatabaseCreation();
     }
 
-    public boolean insertRestaurants() {
+    private void forceDatabaseCreation() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.save();
+        restaurant.delete();
+    }
+
+    private static DatabaseInitialization getInstance(Context context) {
+        if (mInstance == null)
+            mInstance = new DatabaseInitialization(context);
+
+        return mInstance;
+    }
+
+    public static boolean initialize(Context context) {
+        boolean success;
+        DatabaseInitialization initialization = getInstance(context);
+
+        if (initialization.isReady(context))
+            return true;
+
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        initialization.mDatabase = dbHelper.getWritableDatabase();
+
+        if ((success = initialization.insertRestaurants())) {
+            if (initialization.mDatabase.isOpen())
+                initialization.mDatabase.close();
+        }
+
+        initialization.setReady(context, success);
+        return success;
+    }
+
+    private final String PREFERENCE_DB_IS_LOADED = "DatabaseInitializatio:db_is_loaded";
+
+    private boolean isReady(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(PREFERENCE_DB_IS_LOADED, false);
+    }
+
+    private void setReady(Context context, boolean isReady) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(PREFERENCE_DB_IS_LOADED, isReady).apply();
+    }
+
+    private boolean insertRestaurants() {
         boolean success = false;
         try {
             mDatabase.execSQL("INSERT INTO `restaurant` (`restaurant_id`, `name`, `street`, `building`, `city`, `state`, `zip`, `grade`, `gradedate`, `price`, `phone`, `cuisine`, `violation`, `latitude`, `longitude`, `total_rating`, `count`, `Approved`) VALUES\n" +
@@ -226,10 +276,5 @@ public class DatabaseInitialization {
         }
 
         return success;
-    }
-
-    public boolean closeDataBase() {
-        mDatabase.close();
-        return !mDatabase.isOpen();
     }
 }
