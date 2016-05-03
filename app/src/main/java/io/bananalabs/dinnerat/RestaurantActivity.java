@@ -2,6 +2,7 @@ package io.bananalabs.dinnerat;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,6 +56,8 @@ public class RestaurantActivity extends AppCompatActivity {
                     R.id.text_hour,
                     new RandomHours().randomSet());
             listView.setAdapter(adapter);
+            View emptyView = findViewById(R.id.text_empty);
+            listView.setEmptyView(emptyView);
         }
     }
 }
