@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,6 +21,7 @@ import io.bananalabs.dinnerat.models.Restaurant;
 import io.bananalabs.dinnerat.models.requests.RestaurantRequest;
 import io.bananalabs.dinnerat.network.ClientUsage;
 import io.bananalabs.dinnerat.network.ServerConnection;
+import io.bananalabs.dinnerat.utils.Utilities;
 
 public class RestaurantActivity
         extends
@@ -73,14 +73,14 @@ public class RestaurantActivity
         if (matchesList != null) {
             matchesAdapter = new ArrayAdapter<>(
                     this,
-                    android.R.layout.simple_list_item_1,
+                    android.R.layout.simple_list_item_2,
                     android.R.id.text1,
                     restaurantsFound
             );
             matchesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                    Toast.makeText(adapterView.getContext(), "POSITION " + position, Toast.LENGTH_SHORT).show();
+                    Utilities.opentUrl(RestaurantActivity.this, restaurantsFound.get(position).mobileReserveUrl);
                 }
             });
             matchesList.setAdapter(matchesAdapter);

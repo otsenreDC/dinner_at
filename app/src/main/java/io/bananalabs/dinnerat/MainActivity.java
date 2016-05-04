@@ -74,7 +74,7 @@ public class MainActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Select<Restaurant> select = Select.from(Restaurant.class).sortAsc(Restaurant.Contract.COL_CUISINE, Restaurant.Contract.COL_NAME);
+        Select<Restaurant> select = Select.from(Restaurant.class);//.sortAsc(Restaurant.Contract.COL_CUISINE, Restaurant.Contract.COL_NAME);
         CPOrmLoader<Restaurant> loader = new CPOrmLoader<>(this, select);
         loader.setUpdateThrottle(1000);
         return loader;
