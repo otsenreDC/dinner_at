@@ -31,8 +31,9 @@ public class GsonRequest<T> extends Request<T> {
     private Gson gson;
     private final Class<T> clazz;
     private final HashMap<String, String> headers;
+    private final HashMap<String, String> parameters;
     private final Response.Listener<T> listener;
-    private final Object parameters;
+    private final Object body;
 
 
     /**
@@ -43,11 +44,12 @@ public class GsonRequest<T> extends Request<T> {
      * @param clazz   Relevant class object, for Gson's reflection
      * @param headers Map of request headers
      */
-    public GsonRequest(int method, String url, Object parameters, Class<T> clazz, HashMap<String, String> headers,
+    public GsonRequest(int method, String url, Object body, HashMap<String, String> parameters, Class<T> clazz, HashMap<String, String> headers,
                        Response.Listener<T> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.clazz = clazz;
         this.headers = headers;
+        this.body = body;
         this.parameters = parameters;
         this.listener = listener;
         this.gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:SS.sss'Z'");
@@ -68,12 +70,17 @@ public class GsonRequest<T> extends Request<T> {
         }
 
         try {
-            return gson.toJson(this.parameters).getBytes(getParamsEncoding());
+            return gson.toJson(this.body).getBytes(getParamsEncoding());
         } catch (NullPointerException | UnsupportedEncodingException e) {
             Log.d(LOG_TAG, e.getLocalizedMessage());
         }
 
         return null;
+    }
+
+    @Override
+    public HashMap<String, String> getParams() {
+        return parameters;
     }
 
     @Override

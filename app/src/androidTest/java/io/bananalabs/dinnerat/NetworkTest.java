@@ -20,7 +20,7 @@ public class NetworkTest extends AndroidTestCase {
     public static boolean connectionDone = false;
     public void testRestaurantRequest() {
         final CountDownLatch latch = new CountDownLatch(1);
-        ClientUsage.requestResturant(
+        ClientUsage.requestRestaurant(
                 getContext(),
                 new RestaurantRequest("Locanda", "NY"),
                 this,

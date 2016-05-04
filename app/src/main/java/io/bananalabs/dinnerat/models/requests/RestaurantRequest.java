@@ -42,5 +42,12 @@ public class RestaurantRequest {
         public String mobileReserveUrl;
         @SerializedName("image_url")
         public String imageUrl;
+
+        @Override
+        public String toString() {
+            if (name != null)
+                return name;
+            return super.toString();
+        }
     }
 }
