@@ -29,4 +29,5 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.he5ed.lib:volley:android-6.0.1_r5'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:cardview-v7:23.2.1'
 }

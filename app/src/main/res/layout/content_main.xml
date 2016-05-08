@@ -10,6 +10,8 @@
 
     <ListView
         android:id="@+id/list_restaurants"
+        android:dividerHeight="4dp"
+        android:divider="#0000"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

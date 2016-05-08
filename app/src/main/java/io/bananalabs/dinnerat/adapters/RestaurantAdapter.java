@@ -2,12 +2,14 @@ package io.bananalabs.dinnerat.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
@@ -25,7 +27,7 @@ import io.bananalabs.dinnerat.models.Restaurant;
 /**
  * Created by EDC on 5/8/16.
  */
-public class RestaurantAdapter extends CursorAdapter implements SectionIndexer{
+public class RestaurantAdapter extends CursorAdapter implements SectionIndexer {
 
     private View.OnClickListener onReserveClickListener;
     private String[] sections;
@@ -75,7 +77,13 @@ public class RestaurantAdapter extends CursorAdapter implements SectionIndexer{
         holder.addressView.setText(address);
         holder.areaView.setText(area);
         holder.phoneView.setText(phone);
-        holder.priceView.setText(price);
+        float priceRating = 0;
+        try {
+            priceRating = Float.parseFloat(price);
+        } catch (NumberFormatException nfe) {
+            Log.e(RestaurantAdapter.class.getSimpleName(), nfe.getMessage());
+        }
+        holder.priceView.setRating(priceRating);
         holder.reservationView.setTag(reserveUrl);
 
     }
@@ -98,7 +106,7 @@ public class RestaurantAdapter extends CursorAdapter implements SectionIndexer{
         public final TextView addressView;
         public final TextView areaView;
         public final TextView phoneView;
-        public final TextView priceView;
+        public final RatingBar priceView;
         public final Button reservationView;
 
         public ViewHolder(View view) {
@@ -109,7 +117,7 @@ public class RestaurantAdapter extends CursorAdapter implements SectionIndexer{
             addressView = (TextView) view.findViewById(R.id.text_address);
             areaView = (TextView) view.findViewById(R.id.text_area);
             phoneView = (TextView) view.findViewById(R.id.text_phone);
-            priceView = (TextView) view.findViewById(R.id.text_price);
+            priceView = (RatingBar) view.findViewById(R.id.rating_price);
             reservationView = (Button) view.findViewById(R.id.button_reservation);
         }
 
