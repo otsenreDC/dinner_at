@@ -60,7 +60,7 @@ public class MainActivity
                 .from(Restaurant.class)
                 .sortAsc(Restaurant.Contract.COL_NAME);
         CPOrmLoader<Restaurant> loader = new CPOrmLoader<>(this, select);
-        loader.setUpdateThrottle(2000);
+        loader.setUpdateThrottle(500);
         return loader;
     }
 
