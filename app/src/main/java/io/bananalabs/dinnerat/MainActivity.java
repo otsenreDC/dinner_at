@@ -1,14 +1,22 @@
 package io.bananalabs.dinnerat;
 
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -19,6 +27,8 @@ import io.bananalabs.dinnerat.utils.Utilities;
 import za.co.cporm.model.loader.support.CPOrmLoader;
 import za.co.cporm.model.query.Select;
 
+;
+
 public class MainActivity
         extends
         AppCompatActivity
@@ -26,6 +36,7 @@ public class MainActivity
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private RestaurantAdapter mAdapter;
+    private SimpleCursorAdapter mSuggestionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,14 @@ public class MainActivity
                             .setAction("Action", null).show();
                 }
             });
+        
+        mSuggestionAdapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{Restaurant.Contract.COL_NAME},
+                new int[]{android.R.id.text1},
+                0);
 
         mAdapter = new RestaurantAdapter(this, null, 0);
 
@@ -66,6 +85,28 @@ public class MainActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main_activity, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.setSuggestionsAdapter(mSuggestionAdapter);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Select<Restaurant> select = Select
                 .from(Restaurant.class)
@@ -78,11 +119,13 @@ public class MainActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        mSuggestionAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+        mSuggestionAdapter.swapCursor(null);
     }
 
 
