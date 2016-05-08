@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import io.bananalabs.dinnerat.models.Restaurant;
+
 /**
  * Created by EDC on 5/3/16.
  */
@@ -11,15 +13,26 @@ public class RestaurantRequest {
 
     public String name;
     public String state;
+    public Integer perPage;
+    public Integer page;
 
     public RestaurantRequest() {
         name = "";
-        state = "";
+        state = "NY";
+        perPage = 100;
+        page = 1;
     }
 
     public RestaurantRequest(String name, String state) {
         this.name = name;
         this.state = state;
+    }
+
+    public RestaurantRequest(String name, String state, Integer perPage, Integer page) {
+        this.name = name;
+        this.state = state;
+        this.perPage = perPage;
+        this.page = page;
     }
 
     public static class RestaurantResponse {
@@ -30,24 +43,7 @@ public class RestaurantRequest {
         @SerializedName("current_page")
         public int currentPage;
         @SerializedName("restaurants")
-        public List<OpenTableRestaurant> restaurants;
+        public List<Restaurant> restaurants;
     }
 
-    public static class OpenTableRestaurant {
-        @SerializedName("id")
-        public long id;
-        @SerializedName("name")
-        public String name;
-        @SerializedName("mobile_reserve_url")
-        public String mobileReserveUrl;
-        @SerializedName("image_url")
-        public String imageUrl;
-
-        @Override
-        public String toString() {
-            if (name != null)
-                return name;
-            return super.toString();
-        }
-    }
 }

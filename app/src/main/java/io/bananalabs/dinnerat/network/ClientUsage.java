@@ -23,6 +23,7 @@ public class ClientUsage {
 
     public static final String URL = "https://opentable.herokuapp.com";
     public static final String API_RESTAURANT = "/api/restaurants?name=%s&state=%s";
+    public static final String API_RESTAURANTS = "/api/restaurants?state=%s&per_page=%d&page=%d";
 
     public static void connection(Context context, String path, int method, Object request, HashMap<String, String> params,Object tag, Class<?> responseClass, Response.Listener listener, Response.ErrorListener errorListener) {
         GsonRequest gsonRequest = new GsonRequest<>(method, URL + path, request,params, responseClass, null, listener, errorListener);
@@ -44,6 +45,21 @@ public class ClientUsage {
                 listener,
                 errorListener);
     }
+
+    public static void requestRestaurants(Context context, RestaurantRequest request, Object tag, Response.Listener<RestaurantRequest.RestaurantResponse> listener, Response.ErrorListener errorListener) throws UnsupportedEncodingException {
+        String path = String.format(Locale.US, API_RESTAURANTS, request.state, request.perPage, request.page);
+        connection(
+                context,
+                path,
+                Request.Method.GET,
+                null,
+                null,
+                tag,
+                RestaurantRequest.RestaurantResponse.class,
+                listener,
+                errorListener);
+    }
+
 
     private static HashMap<String, String> createHeaders() {
         HashMap<String, String> headers = new HashMap<>();

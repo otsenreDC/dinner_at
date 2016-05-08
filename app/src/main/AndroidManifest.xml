@@ -36,8 +36,6 @@
             android:authorities="io.bananalabs.dinnerat.booking"
             android:exported="false"
             android:process=":provider" />
-
-        <activity android:name=".RestaurantActivity"></activity>
     </application>
 
 </manifest>

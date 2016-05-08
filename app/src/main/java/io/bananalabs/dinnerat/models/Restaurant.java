@@ -1,12 +1,17 @@
 package io.bananalabs.dinnerat.models;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 import za.co.cporm.model.CPDefaultRecord;
+import za.co.cporm.model.CPOrm;
 import za.co.cporm.model.annotation.Column.Column;
+import za.co.cporm.model.annotation.Column.Unique;
 import za.co.cporm.model.annotation.Table;
 import za.co.cporm.model.query.Select;
 
@@ -15,62 +20,70 @@ import za.co.cporm.model.query.Select;
  */
 @Table
 public class Restaurant extends CPDefaultRecord {
+
+    @SerializedName("id")
     @Column
+    @Unique
     private Long restaurantId;
+    @SerializedName("name")
     @Column
     private String name;
+    @SerializedName("address")
     @Column
-    private String street;
-    @Column
-    private String building;
+    private String address;
+    @SerializedName("city")
     @Column
     private String city;
+    @SerializedName("state")
     @Column
     private String state;
+    @SerializedName("area")
     @Column
-    private Integer zip;
+    private String area;
+    @SerializedName("postal_code")
     @Column
-    private String grade;
+    private String zip;
+    @SerializedName("country")
     @Column
-    private Integer gradedate;
-    @Column
-    private String price;
+    private String country;
+    @SerializedName("phone")
     @Column
     private String phone;
+    @SerializedName("price")
     @Column
-    private String cuisine;
+    private String price;
+    @SerializedName("lat")
     @Column
-    private String violation;
+    private Double latitude;
+    @SerializedName("lon")
     @Column
-    private Float latitude;
+    private Double longitude;
+    @SerializedName("reserve_url")
     @Column
-    private Float longitude;
+    private String reserveUrl;
+    @SerializedName("mobile_reserve_url")
     @Column
-    private Float total_rating;
+    private String mobileReserveUrl;
+    @SerializedName("image_url")
     @Column
-    private Integer count;
-    @Column
-    private Boolean approved;
+    private String imageUrl;
 
     public Restaurant() {
         this.restaurantId = (long) 0;
         this.name = "";
-        this.street = "";
-        this.building = "";
+        this.address = "";
         this.city = "";
         this.state = "NY";
-        this.zip = 0;
-        this.grade = "";
-        this.gradedate = 0;
-        this.price = "";
+        this.area = "";
+        this.zip = "";
+        this.country = "";
         this.phone = "";
-        this.cuisine = "";
-        this.violation = "";
-        this.latitude = (float) 0;
-        this.longitude = (float) 0;
-        this.total_rating = (float) 0;
-        this.count = 0;
-        this.approved = true;
+        this.price = "";
+        this.latitude = (double) 0;
+        this.longitude = (double) 0;
+        this.reserveUrl = "";
+        this.mobileReserveUrl = "";
+        this.imageUrl = "";
     }
 
     /*
@@ -91,10 +104,35 @@ public class Restaurant extends CPDefaultRecord {
         return Restaurant.findById(Restaurant.class, id);
     }
 
+    @Override
+    public String toString() {
+        if (name != null)
+            return name;
+        return super.toString();
+    }
+
+    @Override
+    public void save() {
+        save(CPOrm.getApplicationContext());
+    }
+
+    @Override
+    public void save(Context context) {
+        Restaurant r = Select.from(Restaurant.class).whereEquals("name", this.name).first();
+        if (r != null) {
+            this._id = r._id;
+        }
+        super.save(context);
+    }
+
     /*
-    Accessors
-     */
-    public Restaurant(Long restaurantId) {
+                Accessors
+                 */
+    public Long getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(Long restaurantId) {
         this.restaurantId = restaurantId;
     }
 
@@ -106,20 +144,12 @@ public class Restaurant extends CPDefaultRecord {
         this.name = name;
     }
 
-    public String getStreet() {
-        return street;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
-        this.building = building;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCity() {
@@ -138,36 +168,28 @@ public class Restaurant extends CPDefaultRecord {
         this.state = state;
     }
 
-    public Integer getZip() {
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getZip() {
         return zip;
     }
 
-    public void setZip(Integer zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 
-    public String getGrade() {
-        return grade;
+    public String getCountry() {
+        return country;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public Integer getGradedate() {
-        return gradedate;
-    }
-
-    public void setGradedate(Integer gradedate) {
-        this.gradedate = gradedate;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getPhone() {
@@ -178,81 +200,70 @@ public class Restaurant extends CPDefaultRecord {
         this.phone = phone;
     }
 
-    public String getCuisine() {
-        return cuisine;
+    public String getPrice() {
+        return price;
     }
 
-    public void setCuisine(String cuisine) {
-        this.cuisine = cuisine;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public String getViolation() {
-        return violation;
-    }
-
-    public void setViolation(String violation) {
-        this.violation = violation;
-    }
-
-    public Float getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Float latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Float getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Float longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Float getTotal_rating() {
-        return total_rating;
+    public String getReserveUrl() {
+        return reserveUrl;
     }
 
-    public void setTotalRating(Float total_rating) {
-        this.total_rating = total_rating;
+    public void setReserveUrl(String reserveUrl) {
+        this.reserveUrl = reserveUrl;
     }
 
-    public Integer getCount() {
-        return count;
+    public String getMobileReserveUrl() {
+        return mobileReserveUrl;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setMobileReserveUrl(String mobileReserveUrl) {
+        this.mobileReserveUrl = mobileReserveUrl;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public static class Contract {
         public static final String COL_ID = "_id";
         public static final String COL_RESTAURANT_ID = "restaurant_id";
         public static final String COL_NAME = "name";
-        public static final String COL_STREET = "street";
-        public static final String COL_BUILDING = "building";
+        public static final String COL_ADDRESS = "address";
         public static final String COL_CITY = "city";
         public static final String COL_STATE = "state";
+        public static final String COL_AREA = "area";
         public static final String COL_ZIP = "zip";
-        public static final String COL_GRADE = "grade";
-        public static final String COL_GRADEDATE = "gradadate";
-        public static final String COL_PRICE = "price";
+        public static final String COL_COUNTRY = "country";
         public static final String COL_PHONE = "phone";
-        public static final String COL_CUISINE = "cuisine";
-        public static final String COL_VIOLATION = "violation";
+        public static final String COL_PRICE = "price";
         public static final String COL_LATITUDE = "latitude";
         public static final String COL_LONGITUDE = "longitude";
-        public static final String COL_TOTAL_RATING = "total_rating";
-        public static final String COL_COUNT = "count";
-        public static final String COL_APPROVED = "approved";
+        public static final String COL_RESERVE_URL = "reserve_url";
+        public static final String COL_MOBILE_RESERVE_URL = "mobile_reserve_url";
+        public static final String COL_IMAGE_URL = "image_url";
     }
 }
