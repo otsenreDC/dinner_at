@@ -8,9 +8,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 import io.bananalabs.dinnerat.R;
 import io.bananalabs.dinnerat.models.Restaurant;
@@ -18,16 +25,16 @@ import io.bananalabs.dinnerat.models.Restaurant;
 /**
  * Created by EDC on 5/8/16.
  */
-public class RestaurantAdapter extends CursorAdapter {
+public class RestaurantAdapter extends CursorAdapter implements SectionIndexer{
 
     private View.OnClickListener onReserveClickListener;
+    private String[] sections;
+    private HashMap<String, Integer> mMapIndex;
 
     public RestaurantAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-    }
-
-    public void setOnReserveClickListener(View.OnClickListener onClickListener) {
-        this.onReserveClickListener = onClickListener;
+        this.mMapIndex = new LinkedHashMap<>();
+        createSections(c);
     }
 
     @Override
@@ -73,6 +80,16 @@ public class RestaurantAdapter extends CursorAdapter {
 
     }
 
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        createSections(newCursor);
+        return super.swapCursor(newCursor);
+    }
+
+    public void setOnReserveClickListener(View.OnClickListener onClickListener) {
+        this.onReserveClickListener = onClickListener;
+    }
+
     public static class ViewHolder {
         public final ImageView pictureView;
         public final TextView nameView;
@@ -96,5 +113,44 @@ public class RestaurantAdapter extends CursorAdapter {
             reservationView = (Button) view.findViewById(R.id.button_reservation);
         }
 
+    }
+
+    private void createSections(Cursor cursor) {
+        int index = 0;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(cursor.getColumnIndex(Restaurant.Contract.COL_NAME));
+                if (!name.isEmpty()) {
+                    String chr = name.substring(0, 1);
+//                    chr = chr.toUpperCase(Locale.US);
+                    if (!mMapIndex.containsKey(chr))
+                        mMapIndex.put(chr, index);
+                }
+                index++;
+            }
+        }
+
+        Set<String> sectionLetters = mMapIndex.keySet();
+        ArrayList<String> sectionList = new ArrayList<>(sectionLetters);
+        Collections.sort(sectionList);
+        sections = new String[sectionList.size()];
+        sectionList.toArray(sections);
+    }
+
+
+    @Override
+    public Object[] getSections() {
+        return sections;
+    }
+
+    @Override
+    public int getPositionForSection(int section) {
+        return mMapIndex.get(sections[section]);
+    }
+
+    @Override
+    public int getSectionForPosition(int i) {
+        return 0;
     }
 }

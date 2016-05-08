@@ -3,8 +3,6 @@ package io.bananalabs.dinnerat;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -34,20 +32,11 @@ public class MainActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null)
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-
         mAdapter = new RestaurantAdapter(this, null, 0);
 
         ListView listView = (ListView) findViewById(R.id.list_restaurants);
         if (listView != null) {
+            listView.setFastScrollEnabled(true);
             listView.setAdapter(mAdapter);
             mAdapter.setOnReserveClickListener(new View.OnClickListener() {
                 @Override
