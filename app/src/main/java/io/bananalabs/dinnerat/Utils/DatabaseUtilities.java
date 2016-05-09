@@ -1,10 +1,10 @@
 package io.bananalabs.dinnerat.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -12,7 +12,7 @@ import com.android.volley.VolleyError;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import io.bananalabs.dinnerat.MainActivity;
+import io.bananalabs.dinnerat.R;
 import io.bananalabs.dinnerat.models.Restaurant;
 import io.bananalabs.dinnerat.models.requests.RestaurantRequest;
 import io.bananalabs.dinnerat.network.ClientUsage;
@@ -40,7 +40,6 @@ public class DatabaseUtilities {
     }
 
     /**
-     *
      * @return true if fetching
      */
     public boolean populateDatabase() {
@@ -54,6 +53,7 @@ public class DatabaseUtilities {
     public static int page = 1;
     public static int perPage = 100;
     public static int entriesCounter = 0;
+    public static int totalEntries = 0;
 
     private void requestRestaurants() {
         RestaurantRequest request = new RestaurantRequest();
@@ -78,6 +78,7 @@ public class DatabaseUtilities {
         public void onResponse(RestaurantRequest.RestaurantResponse response) {
             if (response != null && response.restaurants != null) {
                 entriesCounter += response.restaurants.size();
+                totalEntries = response.totalEntries;
                 storeRestaurants(response.restaurants, page);
                 if (entriesCounter < response.totalEntries) {
                     requestRestaurants();
@@ -95,20 +96,49 @@ public class DatabaseUtilities {
         }
     };
 
+    public static ProgressDialog mProgressDialog;
+    public static int processed = 0;
     public void storeRestaurants(final List<Restaurant> restaurants, final int page) {
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Integer, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if (mProgressDialog == null) {
+                    mProgressDialog = new ProgressDialog(mContext);
+                    mProgressDialog.setMax(totalEntries);
+                    mProgressDialog.setCancelable(false);
+                    mProgressDialog.setMessage(mContext.getString(R.string.saving_database));
+                    mProgressDialog.setIndeterminate(false);
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+                }
+                mProgressDialog.show();
+            }
+
             @Override
             protected Void doInBackground(Void... voids) {
-                Log.d("ASYNC TASK", "PAGE " + page);
-                for (Restaurant restaurant : restaurants)
+                for (Restaurant restaurant : restaurants) {
                     restaurant.save();
+                    publishProgress(1);
+                }
                 return null;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                Log.d(MainActivity.class.getSimpleName(), "DONE" + page);
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                processed += values[0];
+                mProgressDialog.incrementProgressBy(values[0]);
+            }
 
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if(processed >= totalEntries) {
+                    if (mProgressDialog != null) {
+                        mProgressDialog.dismiss();
+                        mProgressDialog = null;
+                    }
+                }
             }
         }.execute();
 

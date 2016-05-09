@@ -2,4 +2,5 @@
     <string name="app_name">DinnerAt</string>
     <string name="title_activity_main">Restaurants</string>
     <string name="reservation">Reservations</string>
+    <string name="saving_database">Saving restaurants\' information</string>
 </resources>
